@@ -1,69 +1,39 @@
 package TP1.e3;
 
-import TP1.e1.Node;
-
-import java.util.Objects;
+import TP1.e1.MySimpleLinkedList;
 
 public class Pila {
 
-    protected Node first;
-    protected Node last;
+    MySimpleLinkedList list;
     int size;
 
     public Pila() {
-        this.first = null;
-        this.last = null;
         this.size = 0;
+        list = new MySimpleLinkedList();
     }
 
     public void push(Object o) {
-        size++;
-        Node tmp = new Node(o,null);
-        tmp.setNext(this.first);
-        if(isEmpty()) {
-            last = tmp;
-        }
-        this.first = tmp;
+       list.insertFront(o);
     }
 
     public boolean isEmpty() {
-        return !Objects.isNull(first);
+        return list.isEmpty();
     }
 
     public Object pop() {
-        if(!Objects.isNull(this.first)) {
-            Object tmp = this.first.getInfo();
-            this.first = this.first.getNext();
-            return tmp;
-        }
-        return null;
+        return list.extractFront();
     }
 
     public Object top() {
-        if(!Objects.isNull(this.first)) {
-            return this.first.getInfo();
-        }
-        return null;
-    }
-
-    private void pushLast(Node o) {
-        Node tmp = new Node(o,null);
-        if(isEmpty()) {
-           first = tmp;
-        } else {
-            this.last.setNext(tmp);
-        }
-        last = tmp;
+        return list.peek();
     }
 
     public void reverse() {
-        Node tempFirst = this.last;
-        Node n = this.first;
-        while (n != null) {
-            n = n.getNext();
-            tempFirst.setNext(n);
+        MySimpleLinkedList reversedList = new MySimpleLinkedList();
+        while(!isEmpty()) {
+            reversedList.insertFront(pop());
         }
-        this.first = tempFirst;
+        list = reversedList;
     }
 
     public static void main(String[] args) {

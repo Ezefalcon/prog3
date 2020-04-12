@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-public class MySimpleLinkedList {
+public class MySimpleLinkedList implements Iterator{
 
     protected Node first;
     int size;
@@ -23,27 +23,21 @@ public class MySimpleLinkedList {
     }
 
     public Object extractFront() {
-        Node temp = first;
-        first = first.getNext();
-        return temp;
+        if(!Objects.isNull(first)) {
+            Node temp = first;
+            first = first.getNext();
+            return temp.getInfo();
+        }
+        return null;
     }
 
     public boolean isEmpty() {
-        // TODO
-        return !Objects.isNull(first);
+        return Objects.isNull(first);
     }
 
     public int size() {
         return this.size;
     }
-
-//    private int getSize(Node next, int size) {
-//        if(!Objects.isNull(next.getNext())) {
-//            return getSize(next.getNext(), size++);
-//        } else {
-//            return size;
-//        }
-//    }
 
     public Iterator<Object> get(int index) {
         if(size > index) {
@@ -58,4 +52,39 @@ public class MySimpleLinkedList {
         return nodes.iterator();
     }
 
+    public int indexOf(Object o) {
+        Node currentNode = first;
+        for(int i = 0; i < size; i++) {
+            if(currentNode.getInfo().equals(o)) {
+                return size - 1 - i;
+            }
+            currentNode = currentNode.getNext();
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        MySimpleLinkedList list = new MySimpleLinkedList();
+        list.insertFront(1);
+        list.insertFront(6);
+        list.insertFront(7);
+        list.insertFront(6);
+        list.insertFront(3);
+        list.insertFront(76);
+        System.out.println(list.indexOf(76));
+    }
+
+    public Object peek() {
+        return first.getInfo();
+    }
+
+    @Override
+    public boolean hasNext() {
+        return !Objects.isNull(first);
+    }
+
+    @Override
+    public Object next() {
+        return first;
+    }
 }
