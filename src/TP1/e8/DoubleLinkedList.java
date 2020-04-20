@@ -13,7 +13,7 @@ public class DoubleLinkedList {
         size = 0;
     }
 
-    public void push(Object o) {
+    public void push(Integer o) {
         size++;
         Node node = new Node(o, null);
         // Is the first item

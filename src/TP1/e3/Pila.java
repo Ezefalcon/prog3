@@ -12,7 +12,7 @@ public class Pila {
         list = new MySimpleLinkedList();
     }
 
-    public void push(Object o) {
+    public void push(Integer o) {
        list.insertFront(o);
     }
 
@@ -20,12 +20,8 @@ public class Pila {
         return list.isEmpty();
     }
 
-    public Object pop() {
+    public Integer pop() {
         return list.extractFront();
-    }
-
-    public Object top() {
-        return list.peek();
     }
 
     public void reverse() {

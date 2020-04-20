@@ -1,13 +1,11 @@
 package TP1.e1;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-public class MySimpleLinkedList implements Iterator{
+public class MySimpleLinkedList implements Iterable<Integer> {
 
     protected Node first;
+    protected Node lastAdded;
     int size;
 
     public MySimpleLinkedList() {
@@ -15,17 +13,35 @@ public class MySimpleLinkedList implements Iterator{
         this.size = 0;
     }
 
-    public void insertFront(Object o) {
+    public Integer add(Integer info) {
         size++;
-        Node tmp = new Node(o,null);
-        tmp.setNext(this.first);
+        Node node = new Node(info);
+        if (!isEmpty()) {
+            lastAdded.setNext(node);
+        } else {
+            this.first = node;
+        }
+        lastAdded = node;
+        return node.getInfo();
+    }
+
+    public void addAll(List<Integer> list) {
+        for(Integer i : list) {
+            add(i);
+        }
+    }
+
+    public void insertFront(Integer o) {
+        Node tmp = new Node(o,this.first);
+        size++;
         this.first = tmp;
     }
 
-    public Object extractFront() {
+    public Integer extractFront() {
         if(!Objects.isNull(first)) {
             Node temp = first;
             first = first.getNext();
+            size--;
             return temp.getInfo();
         }
         return null;
@@ -63,28 +79,52 @@ public class MySimpleLinkedList implements Iterator{
         return -1;
     }
 
+    public List<MySimpleLinkedList> getSubSequences() {
+        List<MySimpleLinkedList> list = new ArrayList<>();
+        Node currentNode = first;
+        int currentNumber = Integer.MIN_VALUE;
+        MySimpleLinkedList myList = new MySimpleLinkedList();
+        while(currentNode != null) {
+            if(currentNode.getInfo() > currentNumber) {
+                myList.add(currentNode.getInfo());
+            } else {
+                if (myList.size() > 1) {
+                    list.add(myList);
+                }
+                myList = new MySimpleLinkedList();
+                myList.add(currentNode.getInfo());
+            }
+            currentNumber = currentNode.getInfo();
+            currentNode = currentNode.getNext();
+        }
+        if (myList.size() > 1) {
+            list.add(myList);
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
         MySimpleLinkedList list = new MySimpleLinkedList();
-        list.insertFront(1);
-        list.insertFront(6);
-        list.insertFront(7);
-        list.insertFront(6);
-        list.insertFront(3);
-        list.insertFront(76);
-        System.out.println(list.indexOf(76));
-    }
-
-    public Object peek() {
-        return first.getInfo();
+        MySimpleLinkedList list1 = new MySimpleLinkedList();
+        MySimpleLinkedList list2 = new MySimpleLinkedList();
+        list.addAll(Arrays.asList(1, 2, 2));
+        list1.addAll(Arrays.asList(3, 5, 2, 7, 19, 14, 28));
+        list2.addAll(Arrays.asList(3, 5, 2, 2, 7, 19, 14, 28));
+        System.out.println(list.getSubSequences());
+        System.out.println(list1.getSubSequences());
+        System.out.println(list2.getSubSequences());
     }
 
     @Override
-    public boolean hasNext() {
-        return !Objects.isNull(first);
+    public Iterator<Integer> iterator() {
+        return new MyIterator(first);
     }
 
     @Override
-    public Object next() {
-        return first;
+    public String toString() {
+        return "MySimpleLinkedList{" +
+                "first=" + first +
+                ", size=" + size +
+                '}';
     }
 }

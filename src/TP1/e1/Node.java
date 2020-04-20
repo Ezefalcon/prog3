@@ -4,27 +4,27 @@ import java.util.Objects;
 
 public class Node {
 
-    private Object info;
+    private Integer info;
     private Node next;
     private Node previous;
 
-    public Node(Object info, Node next, Node previous) {
+    public Node(Integer info, Node next, Node previous) {
         this.info = info;
         this.next = next;
         this.previous = previous;
     }
 
-    public Node(Object info, Node next) {
+    public Node(Integer info, Node next) {
         this.info = info;
         this.next = next;
-        this.previous = previous;
     }
 
     public Node getPrevious() {
         return previous;
     }
 
-    public Node() {
+    public Node(Integer info) {
+        this.info = info;
     }
 
     public void setPrevious(Node previous) {
@@ -39,11 +39,11 @@ public class Node {
         this.next = next;
     }
 
-    public Object getInfo() {
+    public Integer getInfo() {
         return info;
     }
 
-    public void setInfo(Object info) {
+    public void setInfo(Integer info) {
         this.info = info;
     }
 
@@ -60,5 +60,13 @@ public class Node {
     @Override
     public int hashCode() {
         return Objects.hash(info, next, previous);
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "info=" + info +
+                ", next=" + next +
+                '}';
     }
 }
