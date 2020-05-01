@@ -2,6 +2,9 @@ package TP2.TPE2;
 
 import java.util.List;
 
+/**
+ * Created by efalcon
+ */
 public interface ITree {
 
     int getRoot();

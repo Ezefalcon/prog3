@@ -1,9 +1,6 @@
 package TP2.TPE2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Created by efalcon
@@ -45,7 +42,7 @@ public class Tree implements ITree {
     }
 
     /**
-     * Complejidad: O(alturaMaxima) PREGUNTAR
+     * Complejidad: O(alturaMaxima)
      * Inserta un elemento en el arbol ordenado
      * @param value
      */
@@ -106,9 +103,29 @@ public class Tree implements ITree {
         }
     }
 
+    /**
+     * Complejidad: O(n)
+     * @return La altura del arbol
+     */
     @Override
     public int getHeight() {
-        return 0;
+        if(Objects.isNull(root)) return 0;
+        return getHeight(root);
+    }
+
+    private int getHeight(TreeNode node) {
+        if(Objects.isNull(node.getLeft()) && Objects.isNull(node.getRight())) {
+            return 0;
+        }
+        int leftHeight = 0;
+        int rightHeight = 0;
+        if(!Objects.isNull(node.getRight())) {
+            rightHeight = getHeight(node.getRight());
+        }
+        if(!Objects.isNull(node.getLeft())) {
+            leftHeight = getHeight(node.getLeft());
+        }
+        return Math.max(leftHeight, rightHeight) + 1;
     }
 
     /**
@@ -159,6 +176,11 @@ public class Tree implements ITree {
         printInOrder(node.getRight());
     }
 
+    /**
+     * Complejidad: O(n)
+     * Encuentra la rama mas larga del arbol
+     * @return
+     */
     @Override
     public List<Integer> getLongestBranch() {
         if(Objects.isNull(this.root))
@@ -175,7 +197,7 @@ public class Tree implements ITree {
 
             if (!Objects.isNull(node.getRight()))
                 rightBranch.addAll(getLongestBranch(node.getRight()));
-            if (!Objects.isNull(node.getRight()))
+            if (!Objects.isNull(node.getLeft()))
                 leftBranch.addAll((getLongestBranch(node.getLeft())));
 
             if (leftBranch.size() > rightBranch.size()) {
@@ -188,12 +210,32 @@ public class Tree implements ITree {
         }
     }
 
+    /**
+     * Complejidad: O(n)
+     * Busca los elementos que no tengan nodos hijos
+     * @return lista de elementos que no tienen hijos
+     */
     @Override
     public List<Integer> getFrontier() {
-        return null;
+        if(Objects.isNull(root)) return new ArrayList<>();
+        return getFrontier(root);
+    }
+
+    private List<Integer> getFrontier(TreeNode node) {
+        if (Objects.isNull(node.getLeft()) && Objects.isNull(node.getRight())) {
+            return Arrays.asList(node.getValue());
+        } else {
+            ArrayList<Integer> nodes = new ArrayList<>();
+            if (!Objects.isNull(node.getLeft()))
+                nodes.addAll(getFrontier(node.getLeft()));
+            if (!Objects.isNull(node.getRight()))
+                nodes.addAll(getFrontier(node.getRight()));
+            return nodes;
+        }
     }
 
     /**
+     * Complejidad: O(n)
      * Busca la hoja mas a la derecha posible
      * @return el maximo valor en el arbol || 0
      */
@@ -208,16 +250,41 @@ public class Tree implements ITree {
     }
 
     /**
+     * Complejidad: O(n)
      * @param i nivel del arbol
-     * @return
+     * @return elementos en determinado nivel
      */
     @Override
     public List<Integer> getElemAtLevel(int i) {
-        return null;
+        if(Objects.isNull(root)) return new ArrayList<>();
+        return getElemAtLevel(root, 0, i);
     }
 
-    public void addAll(List<Integer> values) {
+    private List<Integer> getElemAtLevel(TreeNode node, int currentLevel, int level) {
+        if(level == currentLevel) {
+            return Arrays.asList(node.getValue());
+        }
+        List<Integer> values = new ArrayList<>();
+        if (!Objects.isNull(node.getRight()))
+            values.addAll(getElemAtLevel(node.getRight(), currentLevel+1, level));
+        if (!Objects.isNull(node.getLeft()))
+            values.addAll(getElemAtLevel(node.getLeft(), currentLevel+1, level));
+        return values;
+    }
+
+    public void addAll(Collection<Integer> values) {
         values.forEach(this::insert);
+    }
+
+    /**
+     * Populates tree with random numbers
+     */
+    public void populateRandomizedTree() {
+        Set<Integer> randoms = new HashSet<>();
+        while(randoms.size() <= 15) {
+            randoms.add((int) (Math.random() * 40) + 1);
+        }
+        addAll(randoms);
     }
 
     public static void main(String[] args) {
@@ -233,6 +300,14 @@ public class Tree implements ITree {
         tree.printInOrder();
         System.out.println("\nPostOrden");
         tree.printPostOrder();
-        System.out.println("\nmaxElem = "+tree.getMaxElem());
+
+        System.out.println("\nmaxElem = " + tree.getMaxElem());
+
+        System.out.println("Frontier " + tree.getFrontier());
+        System.out.println("Elements at level" + tree.getElemAtLevel(3));
+        Tree treeRandomized = new Tree();
+        treeRandomized.populateRandomizedTree();
+        treeRandomized.printInOrder();
+
     }
 }
