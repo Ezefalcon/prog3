@@ -1,3 +1,5 @@
+![alt text](https://i.ibb.co/85nWNCR/Arbol.png)
+
 La secuencia de elementos para generar un arbol completo es la siguiente:
 
         [5,3,2,4,5.5,5.4,5.6,7,6.4,6.3,6.5,7.5,7.4,7.6,12,14,18.5,18.4,18.6,
