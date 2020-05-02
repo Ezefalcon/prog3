@@ -29,7 +29,7 @@ public class Tree implements ITree {
      */
     @Override
     public boolean hasElem(int value) {
-        return !Objects.isNull(findNode(value, root));
+        return Objects.nonNull(findNode(value, root));
     }
 
     /**
@@ -72,13 +72,89 @@ public class Tree implements ITree {
         }
     }
 
+    /**
+     * Complejidad: O(alturaMaxima)
+     * Elimina un elemento del arbol
+     * @param value
+     * @return si lo elimino o no
+     */
     @Override
-    public boolean delete(int elem) {
-        return false;
+    public boolean delete(int value) {
+        if(Objects.isNull(root)) return false;
+        if(root.getValue() == value) {
+            if(Objects.isNull(root.getLeft()) && Objects.isNull(root.getRight())) { // Si es una hoja
+                this.root = null;
+            } else if(Objects.isNull(root.getLeft()) && Objects.nonNull(root.getRight())) { // Si tiene nodo derecho pero no izquierdo
+                root = root.getRight();
+            } else if(Objects.isNull(root.getRight()) && Objects.nonNull(root.getLeft())) { // Si tiene nodo izquierdo pero no derecho
+                root = root.getLeft();
+            } else {
+                root = root.getRight();
+            }
+            return true;
+        }
+        return delete(value, root);
     }
 
-    private boolean delete(int value, TreeNode treeNode) {
-        return false;
+    private boolean delete(int value, TreeNode node) {
+        // Si llego a esta instancia es porque el nodo propio no contiene el valor que se esta buscando
+        TreeNode left = node.getLeft();
+        TreeNode right = node.getRight();
+        if(Objects.nonNull(left) && left.getValue() == value) {
+            if(Objects.isNull(left.getLeft()) && Objects.isNull(left.getRight())) { //Si es una hoja
+                node.setLeft(null);
+            } else if(Objects.isNull(left.getLeft()) && Objects.nonNull(left.getRight())) { // Si tiene nodo derecho pero no izquierdo
+                node.setLeft(left.getRight());
+            } else if(Objects.isNull(left.getRight()) && Objects.nonNull(left.getLeft())) { // Si tiene nodo izquierdo pero no derecho
+                node.setLeft(left.getLeft());
+            } else { // tiene ambos nodos
+                TreeNode currentNode = left.getRight();
+                // Busca el nodo anterior al mas izquierdo en el nodo derecho
+                while(Objects.nonNull(currentNode.getLeft()) && Objects.nonNull(currentNode.getLeft().getLeft())) {
+                    currentNode = currentNode.getLeft();
+                }
+                TreeNode aux = currentNode;
+                if(Objects.nonNull(currentNode.getLeft())) {
+                    aux = currentNode.getLeft();
+                }
+                currentNode.setLeft(null);
+                aux.setLeft(left.getLeft());
+                aux.setRight(right.getRight());
+                node.setLeft(aux);
+            }
+            return true;
+        } else if(Objects.nonNull(node.getRight()) && node.getRight().getValue() == value) {
+            if(Objects.isNull(right.getLeft()) && Objects.isNull(right.getRight())) { //Si es una hoja
+                node.setRight(null);
+            } else if(Objects.isNull(right.getLeft()) && Objects.nonNull(right.getRight())) { // Si tiene nodo derecho pero no izquierdo
+                node.setRight(right.getRight());
+            } else if(Objects.isNull(right.getRight()) && Objects.nonNull(right.getLeft())) { // Si tiene nodo izquierdo pero no derecho
+                node.setRight(right.getLeft());
+            } else {
+                TreeNode currentNode = right.getRight();
+                // Busca el nodo anterior al mas izquierdo en el nodo derecho
+                while(Objects.nonNull(currentNode.getLeft()) && Objects.nonNull(currentNode.getLeft().getLeft())) {
+                    currentNode = currentNode.getLeft();
+                }
+                TreeNode aux = currentNode;
+                if(Objects.nonNull(currentNode.getLeft())) {
+                    aux = currentNode.getLeft();
+                }
+                currentNode.setLeft(null);
+                aux.setLeft(right.getLeft());
+                aux.setRight(right.getRight());
+                node.setRight(aux);
+            }
+            return true;
+        }
+        boolean isDeleted = false;
+        if(value < node.getValue() && Objects.nonNull(node.getLeft())) {
+            isDeleted = delete(value, node.getLeft());
+        }
+        if(value > node.getValue() && Objects.nonNull(node.getRight()) && !isDeleted) {
+            isDeleted = delete(value, node.getRight());
+        }
+        return isDeleted;
     }
 
     /**
@@ -105,7 +181,7 @@ public class Tree implements ITree {
 
     /**
      * Complejidad: O(n)
-     * @return La altura del arbol
+     * @return La altura maxima del arbol
      */
     @Override
     public int getHeight() {
@@ -119,10 +195,10 @@ public class Tree implements ITree {
         }
         int leftHeight = 0;
         int rightHeight = 0;
-        if(!Objects.isNull(node.getRight())) {
+        if(Objects.nonNull(node.getRight())) {
             rightHeight = getHeight(node.getRight());
         }
-        if(!Objects.isNull(node.getLeft())) {
+        if(Objects.nonNull(node.getLeft())) {
             leftHeight = getHeight(node.getLeft());
         }
         return Math.max(leftHeight, rightHeight) + 1;
@@ -185,7 +261,11 @@ public class Tree implements ITree {
     public List<Integer> getLongestBranch() {
         if(Objects.isNull(this.root))
             return new ArrayList<>();
-        else return getLongestBranch(this.root);
+        else {
+            List<Integer> longestBranch = getLongestBranch(this.root);
+            Collections.reverse(longestBranch);
+            return longestBranch;
+        }
     }
 
     private List<Integer> getLongestBranch(TreeNode node) {
@@ -195,9 +275,9 @@ public class Tree implements ITree {
             ArrayList<Integer> rightBranch = new ArrayList<>();
             ArrayList<Integer> leftBranch = new ArrayList<>();
 
-            if (!Objects.isNull(node.getRight()))
+            if (Objects.nonNull(node.getRight()))
                 rightBranch.addAll(getLongestBranch(node.getRight()));
-            if (!Objects.isNull(node.getLeft()))
+            if (Objects.nonNull(node.getLeft()))
                 leftBranch.addAll((getLongestBranch(node.getLeft())));
 
             if (leftBranch.size() > rightBranch.size()) {
@@ -226,9 +306,9 @@ public class Tree implements ITree {
             return Arrays.asList(node.getValue());
         } else {
             ArrayList<Integer> nodes = new ArrayList<>();
-            if (!Objects.isNull(node.getLeft()))
+            if (Objects.nonNull(node.getLeft()))
                 nodes.addAll(getFrontier(node.getLeft()));
-            if (!Objects.isNull(node.getRight()))
+            if (Objects.nonNull(node.getRight()))
                 nodes.addAll(getFrontier(node.getRight()));
             return nodes;
         }
@@ -243,7 +323,7 @@ public class Tree implements ITree {
     public int getMaxElem() {
         if(Objects.isNull(this.root)) return 0;
         TreeNode currentNode = root;
-        while(!Objects.isNull(currentNode.getRight())) {
+        while(Objects.nonNull(currentNode.getRight())) {
             currentNode = currentNode.getRight();
         }
         return currentNode.getValue();
@@ -265,9 +345,9 @@ public class Tree implements ITree {
             return Arrays.asList(node.getValue());
         }
         List<Integer> values = new ArrayList<>();
-        if (!Objects.isNull(node.getRight()))
+        if (Objects.nonNull(node.getRight()))
             values.addAll(getElemAtLevel(node.getRight(), currentLevel+1, level));
-        if (!Objects.isNull(node.getLeft()))
+        if (Objects.nonNull(node.getLeft()))
             values.addAll(getElemAtLevel(node.getLeft(), currentLevel+1, level));
         return values;
     }
@@ -284,16 +364,24 @@ public class Tree implements ITree {
         while(randoms.size() <= 15) {
             randoms.add((int) (Math.random() * 40) + 1);
         }
-        addAll(randoms);
+        List<Integer> list = new ArrayList<>();
+        list.addAll(randoms);
+        Collections.shuffle(list);
+        addAll(list);
+    }
+
+    @Override
+    public String toString() {
+        return "Tree{" +
+                "root=" + root +
+                '}';
     }
 
     public static void main(String[] args) {
-        List<Integer> integers = Arrays.asList(6,15,18,3,7,2,4,17,13,9,20);
+        List<Integer> integers = Arrays.asList(27, 38, 31, 9, 36, 19, 40, 20, 32, 18, 13, 6, 37, 26, 28, 21);
         Tree tree = new Tree();
         tree.addAll(integers);
-        System.out.println(tree.hasElem(3));
-        System.out.println(tree.hasElem(9));
-        System.out.println(tree.hasElem(333));
+
         System.out.println("PreOrder");
         tree.printPreOrder();
         System.out.println("\nInOrder");
@@ -301,12 +389,19 @@ public class Tree implements ITree {
         System.out.println("\nPostOrden");
         tree.printPostOrder();
 
-        System.out.println("\nmaxElem = " + tree.getMaxElem());
-
-        System.out.println("Frontier " + tree.getFrontier());
-        System.out.println("Elements at level" + tree.getElemAtLevel(3));
+        System.out.println("\nHas element 9 -> " + tree.hasElem(9));
+        System.out.println("Has element 515 -> " + tree.hasElem(515));
+        System.out.println("maxElem -> " + tree.getMaxElem());
+        System.out.println("Height -> " + tree.getHeight());
+        System.out.println("Frontier -> " + tree.getFrontier());
+        System.out.println("Elements at level -> " + tree.getElemAtLevel(3));
+        System.out.println("Longest branch -> " + tree.getLongestBranch());
+        System.out.println("Delete 22 and printInOrder -> ");
+        tree.delete(22);
+        tree.printInOrder();
         Tree treeRandomized = new Tree();
         treeRandomized.populateRandomizedTree();
+        System.out.printf("\nPrint in order random tree -> ");
         treeRandomized.printInOrder();
 
     }

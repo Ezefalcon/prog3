@@ -33,4 +33,13 @@ public class TreeNode {
     public int getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "TreeNode{" +
+                "value=" + value +
+                ", left=" + left +
+                ", right=" + right +
+                '}';
+    }
 }
