@@ -89,7 +89,24 @@ public class Tree implements ITree {
             } else if(Objects.isNull(root.getRight()) && Objects.nonNull(root.getLeft())) { // Si tiene nodo izquierdo pero no derecho
                 root = root.getLeft();
             } else {
-                root = root.getRight();
+                TreeNode currentNode = root.getRight();
+                // Busca el nodo anterior al mas izquierdo en el nodo derecho
+                while(Objects.nonNull(currentNode.getLeft()) && Objects.nonNull(currentNode.getLeft().getLeft())) {
+                    currentNode = currentNode.getLeft();
+                }
+                TreeNode aux = currentNode;
+                if(Objects.nonNull(currentNode.getLeft())) {
+                    aux = currentNode.getLeft();
+                }
+                if(Objects.nonNull(aux.getRight())) {
+                    currentNode.setLeft(aux.getRight());
+                } else {
+                    currentNode.setLeft(null);
+                }
+                aux.setLeft(root.getLeft());
+                aux.setRight(root.getRight());
+                root = aux;
+
             }
             return true;
         }
@@ -117,9 +134,13 @@ public class Tree implements ITree {
                 if(Objects.nonNull(currentNode.getLeft())) {
                     aux = currentNode.getLeft();
                 }
-                currentNode.setLeft(null);
+                if(Objects.nonNull(aux.getRight())) {
+                    currentNode.setLeft(aux.getRight());
+                } else {
+                    currentNode.setLeft(null);
+                }
                 aux.setLeft(left.getLeft());
-                aux.setRight(right.getRight());
+                aux.setRight(left.getRight());
                 node.setLeft(aux);
             }
             return true;
@@ -140,7 +161,11 @@ public class Tree implements ITree {
                 if(Objects.nonNull(currentNode.getLeft())) {
                     aux = currentNode.getLeft();
                 }
-                currentNode.setLeft(null);
+                if(Objects.nonNull(aux.getRight())) {
+                    currentNode.setLeft(aux.getRight());
+                } else {
+                    currentNode.setLeft(null);
+                }
                 aux.setLeft(right.getLeft());
                 aux.setRight(right.getRight());
                 node.setRight(aux);

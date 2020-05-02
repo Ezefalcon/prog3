@@ -26,8 +26,7 @@ public class Main {
         System.out.println("Frontier -> " + tree.getFrontier());
         System.out.println("Elements at level -> " + tree.getElemAtLevel(3));
         System.out.println("Longest branch -> " + tree.getLongestBranch());
-        System.out.println("Delete 22 and printInOrder -> ");
-        tree.delete(22);
+        System.out.println("Delete 22 and printInOrder -> " + tree.delete(31) + " -> ");
         tree.printInOrder();
 
         Tree treeRandomized = new Tree();
