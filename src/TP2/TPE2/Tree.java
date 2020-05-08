@@ -167,7 +167,6 @@ public class Tree implements ITree {
                     currentNode.setLeft(null);
                 }
                 aux.setLeft(right.getLeft());
-                aux.setRight(right.getRight());
                 node.setRight(aux);
             }
             return true;
@@ -324,7 +323,9 @@ public class Tree implements ITree {
     @Override
     public List<Integer> getFrontier() {
         if(Objects.isNull(root)) return new ArrayList<>();
-        return getFrontier(root);
+        List<Integer> frontier = getFrontier(root);
+        Collections.reverse(frontier);
+        return frontier;
     }
 
     private List<Integer> getFrontier(TreeNode node) {
@@ -383,17 +384,21 @@ public class Tree implements ITree {
     }
 
     /**
-     * Populates tree with random numbers
+     * Populates tree with random numbers with max height of 4
      */
     public void populateRandomizedTree() {
         Set<Integer> randoms = new HashSet<>();
-        while(randoms.size() <= 15) {
-            randoms.add((int) (Math.random() * 40) + 1);
+        while (getHeight() > 4 || isEmpty()) {
+            root = null;
+            randoms = new HashSet<>();
+            while (randoms.size() <= 15) {
+                randoms.add((int) (Math.random() * 40) + 1);
+            }
+            List<Integer> list = new ArrayList<>();
+            list.addAll(randoms);
+            Collections.shuffle(list);
+            addAll(list);
         }
-        List<Integer> list = new ArrayList<>();
-        list.addAll(randoms);
-        Collections.shuffle(list);
-        addAll(list);
     }
 
     @Override
