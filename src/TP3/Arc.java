@@ -3,13 +3,13 @@ package TP3;
 /**
  * Created by efalcon
  */
-public class Arc<T> {
+public class Arc<V> {
 
     private int verticeOrigen;
     private int verticeDestino;
-    private T etiqueta;
+    private V etiqueta;
 
-    public Arc(int verticeOrigen, int verticeDestino, T etiqueta) {
+    public Arc(int verticeOrigen, int verticeDestino, V etiqueta) {
         this.verticeOrigen = verticeOrigen;
         this.verticeDestino = verticeDestino;
         this.etiqueta = etiqueta;
@@ -23,7 +23,7 @@ public class Arc<T> {
         return verticeDestino;
     }
 
-    public T getEtiqueta() {
+    public V getEtiqueta() {
         return etiqueta;
     }
 }

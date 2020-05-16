@@ -1,22 +1,25 @@
 package TP3;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by efalcon
  */
-public class Vertex<T> {
-    int id;
-    T value;
-    List<Arc> arcs;
+public class Vertex<T,V> {
+    private int id;
+    private T value;
+    private List<Arc<V>> arcs;
+    private Color color;
 
     public Vertex(int id) {
         this.id = id;
         this.arcs = new LinkedList<>();
+    }
+
+    public Vertex(int id, T value) {
+        this.id = id;
+        this.value = value;
     }
 
     public void addArc(int vertexTo, T etiqueta) {
@@ -27,17 +30,20 @@ public class Vertex<T> {
     }
 
     public boolean existsArc(int vertexTo) {
-        Arc arc = this.arcs.stream()
+        return this.arcs.stream()
                 .filter(vertex -> vertex.getVerticeOrigen() == this.id && vertex.getVerticeDestino() == vertexTo)
                 .findFirst()
-                .orElse(null);
-        return Objects.nonNull(arc);
+                .isPresent();
     }
 
     public void removeArc(int vertexTo) {
         this.arcs = arcs.stream()
                 .filter(arc -> arc.getVerticeOrigen() == this.id && arc.getVerticeDestino() == vertexTo)
                 .collect(Collectors.toList());
+    }
+
+    public Iterator<Integer> getVertexOfArcs() {
+        return arcs.stream().map(x -> x.getVerticeOrigen()).iterator();
     }
 
     public int getId() {
@@ -56,11 +62,11 @@ public class Vertex<T> {
         this.value = value;
     }
 
-    public List<Arc<T>> getArcs() {
-        return new ArrayList<>(arcs);
+    public Iterator<Arc<V>> getArcs() {
+        return arcs.iterator();
     }
 
-    public void setArcs(LinkedList<Arc> arcs) {
+    public void setArcs(LinkedList<Arc<V>> arcs) {
         this.arcs = arcs;
     }
 
@@ -73,5 +79,13 @@ public class Vertex<T> {
 
     public int getArcsSize() {
         return this.arcs.size();
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

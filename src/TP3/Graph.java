@@ -5,7 +5,7 @@ import java.util.Iterator;
 /**
  * Created by efalcon
  */
-public interface Graph<T> {
+public interface Graph<T,V> {
 
     // Agrega un vertice
     public void agregarVertice(int verticeId);
@@ -35,16 +35,14 @@ public interface Graph<T> {
     public int cantidadArcos();
 
     // Obtiene un iterador que me permite recorrer todos los vertices almacenados en el grafo
-    public Iterator<Integer> obtenerVertices();
+    public Iterator<Vertex<T, V>> obtenerVertices();
 
     // Obtiene un iterador que me permite recorrer todos los vertices adyacentes a verticeId
     public Iterator<Integer> obtenerAdyacentes(int verticeId);
 
     // Obtiene un iterador que me permite recorrer todos los arcos del grafo
-    public Iterator<Arc<T>> obtenerArcos();
+    public Iterator<Arc<V>> obtenerArcos();
 
     // Obtiene un iterador que me permite recorrer todos los arcos que parten desde verticeId
-    public Iterator<Arc<T>> obtenerArcos(int verticeId);
-
-
+    public Iterator<Arc<V>> obtenerArcos(int verticeId);
 }

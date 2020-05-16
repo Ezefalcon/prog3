@@ -6,21 +6,12 @@ import java.util.stream.Collectors;
 /**
  * Created by efalcon
  */
-public class DirectedGraph<T> implements Graph<T>{
+public class DirectedGraph<T,V> implements Graph<T,V>{
 
-    private List<Vertex<T>> vertices;
+    private List<Vertex<T,V>> vertices;
 
     public DirectedGraph() {
         this.vertices = new LinkedList<>();
-    }
-
-    public static void main(String[] args) {
-        DirectedGraph<Integer> directedGraph = new DirectedGraph<>();
-        directedGraph.agregarVertice(12);
-        directedGraph.agregarVertice(15);
-        directedGraph.agregarVertice(17);
-        directedGraph.agregarArco(12,15,20);
-        System.out.println(directedGraph.existeArco(12,15));
     }
 
     /**
@@ -36,31 +27,35 @@ public class DirectedGraph<T> implements Graph<T>{
     }
 
     /**
-     * Complejidad: O(cantidadDeVertices)
+     * Complejidad: O((cantidadDeVertices * 2) * cantidadDeArcos)
      * @param verticeId -> Id del vertice
      */
     @Override
     public void borrarVertice(int verticeId) {
+        int size = vertices.size();
         vertices = vertices.stream()
                 .filter(tVertex -> tVertex.getId() != verticeId)
                 .collect(Collectors.toList());
+        if(size != vertices.size()) {
+             vertices.forEach(x -> x.removeArc(verticeId));
+        }
     }
 
     /**
-     * Complejidad: O(cantidadDeVertices + cantidadDeArcos)
+     * Complejidad: O(cantidadDeVertices + cantidadDeArcosDelVertice)
      * @param verticeId1 -> Id del vertice origen
      * @param verticeId2 -> Id del vertice destino
      * @param etiqueta -> Valor de etiqueta
      */
     @Override
     public void agregarArco(int verticeId1, int verticeId2, T etiqueta) {
-        Vertex<T> vertex = findVertex(verticeId1);// Encontramos el primer vertice
+        Vertex<T, V> vertex = findVertex(verticeId1);// Encontramos el primer vertice
         if(Objects.nonNull(vertex) && !existeArco(verticeId1,verticeId2)) {
             vertex.addArc(verticeId2, etiqueta); // Agregamos el arco
         }
     }
 
-    private Vertex<T> findVertex(int verticeId) {
+    private Vertex<T, V> findVertex(int verticeId) {
         return vertices.stream()
                 .filter(vertex -> vertex.getId() == verticeId)
                 .findFirst()
@@ -74,7 +69,7 @@ public class DirectedGraph<T> implements Graph<T>{
      */
     @Override
     public void borrarArco(int verticeId1, int verticeId2) {
-        Vertex<T> vertex = findVertex(verticeId1);
+        Vertex<T, V> vertex = findVertex(verticeId1);
         if(Objects.nonNull(vertex)) {
             vertex.removeArc(verticeId2);
         }
@@ -98,7 +93,9 @@ public class DirectedGraph<T> implements Graph<T>{
      */
     @Override
     public boolean existeArco(int verticeId1, int verticeId2) {
-        return Objects.nonNull(obtenerArco(verticeId1,verticeId2));
+        Vertex<T, V> vertex = findVertex(verticeId1);
+        if(Objects.isNull(vertex)) return false;
+        return vertex.existsArc(verticeId2);
     }
 
     /**
@@ -109,11 +106,8 @@ public class DirectedGraph<T> implements Graph<T>{
      */
     @Override
     public Arc<T> obtenerArco(int verticeId1, int verticeId2) {
-        Vertex<T> vertex = findVertex(verticeId1);
-        if(Objects.nonNull(vertex)) {
-            return vertex.getArc(verticeId2);
-        }
-        return null;
+        Vertex<T, V> vertex = findVertex(verticeId1);
+        return Objects.nonNull(vertex) ? vertex.getArc(verticeId2) : null;
     }
 
     /**
@@ -142,26 +136,32 @@ public class DirectedGraph<T> implements Graph<T>{
      * @return iterador de vertices
      */
     @Override
-    public Iterator<Integer> obtenerVertices() {
-        return vertices.stream().map(x -> x.getId()).iterator();
+    public Iterator<Vertex<T, V>> obtenerVertices() {
+        return vertices.iterator();
     }
 
+    /**
+     * Complejidad: O(vertices)
+     * @param verticeId
+     * @return
+     */
     @Override
     public Iterator<Integer> obtenerAdyacentes(int verticeId) {
-        return null;
+        Vertex<T, V> vertex = findVertex(verticeId);
+        return Objects.nonNull(vertex) ? vertex.getVertexOfArcs() : Collections.emptyIterator();
     }
 
+    /**
+     * Complejidad: O(vertices)
+     * Trae todos los arcos
+     * @return un iterador de arcos
+     */
     @Override
-    public Iterator<Arc<T>> obtenerArcos() {
-        return vertices.stream().map(x -> x.getArcs())
-                .reduce((x, y) -> {
-                    x.addAll(y);
-                    return x;
-                })
-                .orElse(new ArrayList<>())
-                .iterator();
+    public Iterator<Arc<V>> obtenerArcos() {
+        return new ArcIterator<>(vertices.stream()
+                .map(x -> x.getArcs())
+                .collect(Collectors.toList()));
     }
-
 
     /**
      * Complejidad: O(cantidadDeVertices + cantidadDeArcos)
@@ -169,10 +169,10 @@ public class DirectedGraph<T> implements Graph<T>{
      * @return iterador de arcos del vertice
      */
     @Override
-    public Iterator<Arc<T>> obtenerArcos(int verticeId) {
-        Vertex<T> vertex = findVertex(verticeId);
+    public Iterator<Arc<V>> obtenerArcos(int verticeId) {
+        Vertex<T, V> vertex = findVertex(verticeId);
         if(Objects.nonNull(vertex)) {
-            return vertex.getArcs().iterator();
+            return vertex.getArcs();
         }
         return Collections.emptyIterator();
     }
