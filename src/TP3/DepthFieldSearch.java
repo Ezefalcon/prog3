@@ -41,6 +41,7 @@ public class DepthFieldSearch {
         directedGraph.agregarArco(9,10,1);
         directedGraph.borrarVertice(17);
         System.out.println(directedGraph.existeArco(12,15));
-        directedGraph.dfs();
+        System.out.println(directedGraph.dfs());
+
     }
 }
