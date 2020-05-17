@@ -129,7 +129,7 @@ public class DirectedGraph<T,V> implements Graph<T,V>{
     }
 
     /**
-     * Complejidad: O(cantidadDeVertices)
+     * Complejidad: O(cantidadDeVertices + cantidadDeVertices)
      * @return cantidad de arcos || 0
      */
     @Override
