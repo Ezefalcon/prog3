@@ -10,7 +10,6 @@ public class Vertex<T,V> {
     private int id;
     private T value;
     private List<Arc<V>> arcs;
-    private Color color;
 
     public Vertex(int id) {
         this.id = id;
@@ -32,19 +31,19 @@ public class Vertex<T,V> {
 
     public boolean existsArc(int vertexTo) {
         return this.arcs.stream()
-                .filter(vertex -> vertex.getVerticeOrigen() == this.id && vertex.getVerticeDestino() == vertexTo)
+                .filter(arc -> arc.getVerticeDestino() == vertexTo)
                 .findFirst()
                 .isPresent();
     }
 
     public void removeArc(int vertexTo) {
         this.arcs = arcs.stream()
-                .filter(arc -> arc.getVerticeOrigen() == this.id && arc.getVerticeDestino() == vertexTo)
+                .filter(arc -> arc.getVerticeDestino() != vertexTo)
                 .collect(Collectors.toList());
     }
 
     public Iterator<Integer> getVertexOfArcs() {
-        return arcs.stream().map(x -> x.getVerticeOrigen()).iterator();
+        return arcs.stream().map(x -> x.getVerticeDestino()).iterator();
     }
 
     public int getId() {
@@ -78,11 +77,5 @@ public class Vertex<T,V> {
         return this.arcs.size();
     }
 
-    public Color getColor() {
-        return color;
-    }
 
-    public void setColor(Color color) {
-        this.color = color;
-    }
 }

@@ -1,16 +1,15 @@
 package TP3;
 
-import java.util.*;
-
-import static TP3.Color.*;
+import java.util.Iterator;
 
 /**
  * Created by efalcon
  */
-public class DepthFieldSearch {
+public class Main {
 
     public static void main(String[] args) {
         TaskDFSGraph directedGraph = new TaskDFSGraph();
+        // Vertices
         directedGraph.agregarVertice(0, new Tarea("Tarea 0", 0));
         directedGraph.agregarVertice(1, new Tarea("Tarea 1", 4));
         directedGraph.agregarVertice(2, new Tarea("Tarea 2", 18));
@@ -24,6 +23,7 @@ public class DepthFieldSearch {
         directedGraph.agregarVertice(10, new Tarea("Tarea 10", 3));
         directedGraph.agregarVertice(11, new Tarea("Tarea 11", 1));
         directedGraph.agregarVertice(12, new Tarea("Tarea 12", 5));
+        // Arcos
         directedGraph.agregarArco(0,1,0);
         directedGraph.agregarArco(0,2,0);
         directedGraph.agregarArco(1,3,3);
@@ -39,9 +39,27 @@ public class DepthFieldSearch {
         directedGraph.agregarArco(7,8,7);
         directedGraph.agregarArco(8,9,4);
         directedGraph.agregarArco(9,10,1);
-        directedGraph.borrarVertice(17);
-        System.out.println(directedGraph.existeArco(12,15));
-        System.out.println(directedGraph.dfs());
+        System.out.println("Secuencia de ejecucion critica = " + directedGraph.dfs());
+        System.out.println("Contiene vertice 9 = " + directedGraph.contieneVertice(9));
+        directedGraph.borrarVertice(9);
+        System.out.println("Contiene vertice 9 despues de borrado = " + directedGraph.contieneVertice(9));
+        System.out.println("Existe arco entre vertice 3 y 4 = " + directedGraph.existeArco(3,4));
+        directedGraph.borrarArco(3,4);
+        System.out.println("Existe arco entre vertice 3 y 4 despues de borrado = " + directedGraph.existeArco(3,4));
+        System.out.println(directedGraph.obtenerArco(7,8));
+        System.out.println("Cantidad de vertices del arco = " + directedGraph.cantidadVertices());
+        System.out.println("Cantidad de arcos = " + directedGraph.cantidadArcos());
+        System.out.print("Vertices -> ");
+        printIterator(directedGraph.obtenerVertices());
+        System.out.print("\nAdyacentes del vertice 6 -> " );
+        printIterator(directedGraph.obtenerAdyacentes(6));
+        System.out.println("\nArcos ->");
+        printIterator(directedGraph.obtenerArcos());
+        System.out.println("\nArcos del vertice 2 -> ");
+        printIterator(directedGraph.obtenerArcos(2));
+    }
 
+    public static void printIterator(Iterator it) {
+        it.forEachRemaining(x -> System.out.print(x + " "));
     }
 }

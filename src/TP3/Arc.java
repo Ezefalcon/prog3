@@ -26,4 +26,13 @@ public class Arc<V> {
     public V getEtiqueta() {
         return etiqueta;
     }
+
+    @Override
+    public String toString() {
+        return "Arc{" +
+                "verticeOrigen=" + verticeOrigen +
+                ", verticeDestino=" + verticeDestino +
+                ", etiqueta=" + etiqueta +
+                '}';
+    }
 }
