@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
  */
 public class DirectedGraph<T,V> implements Graph<T,V>{
 
-    private List<Vertex<T,V>> vertices;
+    protected List<Vertex<T,V>> vertices;
 
     public DirectedGraph() {
         this.vertices = new LinkedList<>();
@@ -20,9 +20,9 @@ public class DirectedGraph<T,V> implements Graph<T,V>{
      * @param verticeId -> Id del vertice
      */
     @Override
-    public void agregarVertice(int verticeId) {
+    public void agregarVertice(int verticeId, T value) {
         if(!contieneVertice(verticeId)) {
-            vertices.add(new Vertex(verticeId));
+            vertices.add(new Vertex(verticeId, value));
         }
     }
 
@@ -42,20 +42,29 @@ public class DirectedGraph<T,V> implements Graph<T,V>{
     }
 
     /**
-     * Complejidad: O(cantidadDeVertices + cantidadDeArcosDelVertice)
+     * Complejidad: O(cantidadDeVertices + O(2) + cantidadDeArcosDelVertice)
      * @param verticeId1 -> Id del vertice origen
      * @param verticeId2 -> Id del vertice destino
      * @param etiqueta -> Valor de etiqueta
      */
     @Override
-    public void agregarArco(int verticeId1, int verticeId2, T etiqueta) {
-        Vertex<T, V> vertex = findVertex(verticeId1);// Encontramos el primer vertice
-        if(Objects.nonNull(vertex) && !existeArco(verticeId1,verticeId2)) {
-            vertex.addArc(verticeId2, etiqueta); // Agregamos el arco
+    public void agregarArco(int verticeId1, int verticeId2, V etiqueta) {
+        List<Vertex<T, V>> collect = vertices.stream()
+                .filter(x -> x.getId() == verticeId1 || x.getId() == verticeId2)
+                .collect(Collectors.toList());
+        if(collect.size() > 1) { // Encontro ambos vertices
+            Vertex<T, V> vertex = collect.stream()
+                    .filter(x -> x.getId() == verticeId1)
+                    .findFirst()
+                    .get();
+            if(!existeArco(verticeId1,verticeId2)) {
+                vertex.addArc(verticeId2, etiqueta); // Agregamos el arco
+            }
         }
+
     }
 
-    private Vertex<T, V> findVertex(int verticeId) {
+    protected Vertex<T, V> findVertex(int verticeId) {
         return vertices.stream()
                 .filter(vertex -> vertex.getId() == verticeId)
                 .findFirst()
@@ -136,8 +145,8 @@ public class DirectedGraph<T,V> implements Graph<T,V>{
      * @return iterador de vertices
      */
     @Override
-    public Iterator<Vertex<T, V>> obtenerVertices() {
-        return vertices.iterator();
+    public Iterator<Integer> obtenerVertices() {
+        return vertices.stream().map(x -> x.getId()).collect(Collectors.toList()).iterator();
     }
 
     /**

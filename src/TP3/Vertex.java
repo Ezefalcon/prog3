@@ -20,9 +20,10 @@ public class Vertex<T,V> {
     public Vertex(int id, T value) {
         this.id = id;
         this.value = value;
+        this.arcs = new LinkedList<>();
     }
 
-    public void addArc(int vertexTo, T etiqueta) {
+    public void addArc(int vertexTo, V etiqueta) {
         // Checkear si el arco no existe
         if(!existsArc(vertexTo)) {
             arcs.add(new Arc(this.id, vertexTo, etiqueta));
@@ -64,10 +65,6 @@ public class Vertex<T,V> {
 
     public Iterator<Arc<V>> getArcs() {
         return arcs.iterator();
-    }
-
-    public void setArcs(LinkedList<Arc<V>> arcs) {
-        this.arcs = arcs;
     }
 
     public Arc getArc(int verticeId2) {

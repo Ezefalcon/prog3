@@ -14,6 +14,11 @@ public class Tarea {
         this.duración = duración;
     }
 
+    public Tarea(String nombre, int duración) {
+        this.nombre = nombre;
+        this.duración = duración;
+    }
+
     public String getNombre() {
         return nombre;
     }
