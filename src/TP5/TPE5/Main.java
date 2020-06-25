@@ -4,10 +4,6 @@ import java.util.*;
 
 public class Main {
 
-    private static final int DIAS = 10;
-    private static final int DISPONIBILIDAD_DIARIA = 30;
-    private static final int CANT_DIAS_PREFERIDOS = 3;
-
 
     public static void main(String... args) {
 
@@ -16,22 +12,18 @@ public class Main {
 
         ArrayList<Familia> familias = reader.read();
 
-        // Se ordenan las familias por miembros
-        familias.sort(Comparator.comparingInt(Familia::getMiembros));
-        for (Familia familia: familias)
-            System.out.println(familia);
+        BonoFamiliar bonoFamiliar = new BonoFamiliar(familias, 10);
+        int bono1 = bonoFamiliar.agregarFamiliasBacktracking();
+        System.out.println("Minimo bono de Familias-1 -> " + bono1);
 
 
+        CSVReader reader2 = new CSVReader("resources/familias-2.csv");
 
-//        CSVReader reader2 = new CSVReader("resources/familias-2.csv");
-//
-//        ArrayList<Familia> familias2 = reader2.read();
-//
-//        for (Familia familia: familias2)
-//            System.out.println(familia);
-    }
+        ArrayList<Familia> familias2 = reader2.read();
 
-    public static List<Dia> agregarFamiliasEnDias(List<Familia> familias) {
+        BonoFamiliar bonoFamiliar2 = new BonoFamiliar(familias2, 10);
+        int bono2 = bonoFamiliar2.agregarFamiliasBacktracking();
+        System.out.println("Minimo bono de Familias-2 -> " + bono2);
 
     }
 
